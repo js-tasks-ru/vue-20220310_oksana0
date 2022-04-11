@@ -45,21 +45,18 @@ export default defineComponent({
         })
         .catch((err) => {
           this.errorText = err.message;
-          this.meetup = {};
         });
     },
   },
 
   template: `
     <div class="page-meetup">
-      <template v-if="meetup">
-        <meetup-view v-if="Object.keys(meetup).length" :meetup="meetup"></meetup-view>
-        <ui-container v-else>
+        <meetup-view v-if="meetup" :meetup="meetup"></meetup-view>
+        <ui-container v-else-if="errorText">
           <ui-alert>{{ errorText }}</ui-alert>
         </ui-container>
-      </template>
-      <ui-container v-else>
-        <ui-alert>Загрузка...</ui-alert>
-      </ui-container>
+        <ui-container v-else>
+          <ui-alert>Загрузка...</ui-alert>
+        </ui-container>
     </div>`,
 });
