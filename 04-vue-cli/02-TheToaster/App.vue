@@ -18,7 +18,6 @@ export default {
     success() {
       this.$refs.toaster.success('Success ' + new Date().toLocaleTimeString());
     },
-
     error() {
       this.$refs.toaster.error('Error ' + new Date().toLocaleTimeString());
     },
