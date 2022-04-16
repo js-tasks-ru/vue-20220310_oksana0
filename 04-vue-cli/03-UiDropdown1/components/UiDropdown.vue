@@ -1,6 +1,6 @@
 <template>
-  <div :class="{ dropdown: true, dropdown_opened: isOpened }">
-    <button type="button" :class="{ dropdown__toggle: true, dropdown__toggle_icon: hasIcon }" @click="toggle">
+  <div class="dropdown" :class="{ dropdown_opened: isOpened }">
+    <button type="button" class="dropdown__toggle" :class="{ dropdown__toggle_icon: hasIcon }" @click="toggle">
       <ui-icon v-if="value.icon" :icon="value.icon" class="dropdown__icon" />
       <span>{{ value.text }}</span>
     </button>
@@ -51,11 +51,13 @@ export default {
   data() {
     return {
       isOpened: false,
-      hasIcon: this.options.some((item) => item.icon),
     };
   },
 
   computed: {
+    hasIcon() {
+      return this.options.some((item) => item.icon);
+    },
     value() {
       return this.modelValue ? this.options.find((item) => item.value === this.modelValue) : { text: this.title };
     },

@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ toast: true, [`toast_${type}`]: type }">
+  <div class="toast" :class="{ [`toast_${type}`]: type }">
     <ui-icon class="toast__icon" :icon="iconSrc" />
     <slot></slot>
     <!--    <button @click="hideToast">x</button>-->

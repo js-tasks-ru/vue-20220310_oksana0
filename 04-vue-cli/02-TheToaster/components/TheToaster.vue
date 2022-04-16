@@ -23,12 +23,13 @@ export default {
   data() {
     return {
       toasts: [],
+      lastId: 0,
     };
   },
 
   methods: {
     add(message, type) {
-      this.toasts = [...this.toasts, { message, type, timestamp: Date.now() }];
+      this.toasts = [...this.toasts, { message, type, timestamp: this.lastId++ }];
     },
     remove(timestamp) {
       this.toasts = this.toasts.filter((toast) => toast.timestamp !== timestamp);
