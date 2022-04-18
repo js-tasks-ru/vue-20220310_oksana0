@@ -1,14 +1,55 @@
 <template>
   <label class="checkbox">
-    <input type="checkbox" class="checkbox__input" />
+    <input v-model="model" v-bind="$attrs" type="checkbox" class="checkbox__input" />
     <span class="checkbox__box"></span>
-    Label Text
+    <slot />
   </label>
 </template>
 
 <script>
 export default {
   name: 'UiCheckbox',
+
+  inheritAttrs: false,
+
+  props: {
+    modelValue: [Boolean, Object],
+    value: String,
+  },
+
+  emits: ['update:modelValue'],
+
+  computed: {
+    model: {
+      get() {
+        return this.getValue();
+      },
+      set(newValue) {
+        this.updateValue(newValue);
+      },
+    },
+  },
+
+  methods: {
+    getValue() {
+      if (typeof this.modelValue === 'boolean') {
+        return this.modelValue;
+      } else {
+        return this.modelValue.indexOf(this.value) >= 0;
+      }
+    },
+    updateValue(newValue) {
+      if (typeof this.modelValue === 'boolean') {
+        this.$emit('update:modelValue', newValue);
+      } else {
+        let newValuesList = this.modelValue.includes(this.value)
+          ? this.modelValue.filter((value) => value !== this.value)
+          : [...this.modelValue, this.value];
+
+        this.$emit('update:modelValue', newValuesList);
+      }
+    },
+  },
 };
 </script>
 

@@ -1,13 +1,23 @@
 <template>
-  <div class="input-group input-group_icon input-group_icon-left input-group_icon-right">
-    <div class="input-group__icon">
-      <img class="icon" alt="icon" />
+  <div class="input-group" :class="wrapperClasses">
+    <div v-if="hasLeftIcon()" class="input-group__icon">
+      <slot name="left-icon" />
     </div>
 
-    <input ref="input" class="form-control form-control_rounded form-control_sm" />
-
-    <div class="input-group__icon">
-      <img class="icon" alt="icon" />
+    <component
+      :is="tag"
+      ref="input"
+      :[modifiedValue]="modelValue"
+      :type="type"
+      :multiline="multiline"
+      class="form-control"
+      :class="classes"
+      v-bind="$attrs"
+      @[modifiedEvent]="handleInput"
+      @focus="focus"
+    />
+    <div v-if="hasRightIcon()" class="input-group__icon">
+      <slot name="right-icon" />
     </div>
   </div>
 </template>
@@ -15,6 +25,65 @@
 <script>
 export default {
   name: 'UiInput',
+
+  inheritAttrs: false,
+
+  props: {
+    type: {
+      type: [String, Object],
+      default: 'input',
+    },
+    modelValue: String,
+    modelModifiers: {
+      lazy: Boolean,
+    },
+    small: Boolean,
+    rounded: Boolean,
+    multiline: Boolean,
+  },
+
+  emits: ['update:modelValue'],
+
+  computed: {
+    modifiedValue() {
+      return `value${this.modelModifiers?.lazy ? '.lazy' : ''}`;
+    },
+    modifiedEvent() {
+      return this.modelModifiers?.lazy ? 'change' : 'input';
+    },
+    tag() {
+      return this.multiline ? 'textarea' : 'input';
+    },
+    classes() {
+      return {
+        'form-control_rounded': this.rounded,
+        'form-control_sm': this.small,
+      };
+    },
+    wrapperClasses() {
+      return {
+        'input-group_icon': this.hasLeftIcon() || this.hasRightIcon(),
+        'input-group_icon-left': this.hasLeftIcon(),
+        'input-group_icon-right': this.hasRightIcon(),
+      };
+    },
+  },
+
+  methods: {
+    handleInput($event) {
+      this.$emit('update:modelValue', $event.target.value);
+    },
+    focus() {
+      this.$refs['input'].focus();
+    },
+    hasLeftIcon() {
+      return this.$slots['left-icon'];
+    },
+    hasRightIcon() {
+      return this.$slots['right-icon'];
+    },
+  },
+  expose: ['focus'],
 };
 </script>
 
