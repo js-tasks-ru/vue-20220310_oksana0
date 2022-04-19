@@ -3,6 +3,7 @@
     <p><b>Model Value:</b> {{ date }}</p>
     <p><b>Date:</b> {{ new Date(date).toDateString() }}</p>
     <p><b>Time:</b> {{ new Date(date).toTimeString() }}</p>
+    <p><b>Time:</b> {{ new Date(date).toUTCString() }}</p>
 
     <ui-form-group label="[type=date]">
       <ui-input-date v-model="date" />
