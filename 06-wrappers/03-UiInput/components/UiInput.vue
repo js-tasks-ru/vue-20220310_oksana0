@@ -42,8 +42,6 @@ export default {
     multiline: Boolean,
   },
 
-  emits: ['update:modelValue'],
-
   computed: {
     modifiedValue() {
       return `value${this.modelModifiers?.lazy ? '.lazy' : ''}`;
@@ -83,6 +81,8 @@ export default {
       return this.$slots['right-icon'];
     },
   },
+
+  emits: ['update:modelValue'],
   expose: ['focus'],
 };
 </script>
