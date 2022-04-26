@@ -24,17 +24,8 @@ export default {
       get() {
         return this.modelValue;
       },
-      set() {
-        if (typeof this.modelValue === 'boolean') {
-          this.$emit('update:modelValue', !this.modelValue);
-        } else {
-          this.$emit(
-            'update:modelValue',
-            this.modelValue.includes(this.value)
-              ? this.modelValue.filter((item) => item !== this.value)
-              : [...this.modelValue, this.value],
-          );
-        }
+      set(newValue) {
+        this.$emit('update:modelValue', newValue);
       },
     },
   },
