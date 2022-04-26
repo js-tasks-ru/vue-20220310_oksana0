@@ -9,6 +9,9 @@
 <script>
 import UiInput from './UiInput';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 const formatMap = {
   time: 'HH:mm',
