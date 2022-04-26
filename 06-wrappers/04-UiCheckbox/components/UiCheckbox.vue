@@ -1,6 +1,6 @@
 <template>
   <label class="checkbox">
-    <input v-model="model" v-bind="$attrs" type="checkbox" class="checkbox__input" />
+    <input v-model="model" :value="value" type="checkbox" class="checkbox__input" />
     <span class="checkbox__box"></span>
     <slot />
   </label>
@@ -22,32 +22,16 @@ export default {
   computed: {
     model: {
       get() {
-        return this.getValue();
-      },
-      set(newValue) {
-        this.updateValue(newValue);
-      },
-    },
-  },
-
-  methods: {
-    getValue() {
-      if (typeof this.modelValue === 'boolean') {
         return this.modelValue;
-      } else {
-        return this.modelValue.indexOf(this.value) >= 0;
-      }
-    },
-    updateValue(newValue) {
-      if (typeof this.modelValue === 'boolean') {
-        this.$emit('update:modelValue', newValue);
-      } else {
-        let newValuesList = this.modelValue.includes(this.value)
-          ? this.modelValue.filter((value) => value !== this.value)
-          : [...this.modelValue, this.value];
-
-        this.$emit('update:modelValue', newValuesList);
-      }
+      },
+      set() {
+        this.$emit(
+          'update:modelValue',
+          this.modelValue.includes(this.value)
+            ? this.modelValue.filter((item) => item !== this.value)
+            : [...this.modelValue, this.value],
+        );
+      },
     },
   },
 };
