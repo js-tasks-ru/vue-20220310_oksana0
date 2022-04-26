@@ -1,9 +1,7 @@
 <template>
   <div class="image-uploader">
     <label class="image-uploader__preview" :class="{ 'image-uploader__preview-loading': state === 'loading' }">
-      <span v-if="state === 'empty'" class="image-uploader__text">Загрузить изображение</span>
-      <span v-if="state === 'loading'" class="image-uploader__text">Загрузка...</span>
-      <span v-if="preview || state === 'uploaded'" class="image-uploader__text">Удалить изображение</span>
+      <span class="image-uploader__text">{{ text }}</span>
       <input
         ref="input"
         v-bind="$attrs"
@@ -39,6 +37,16 @@ export default {
   computed: {
     previewUrl() {
       return this.preview ? 'url(' + this.preview + ')' : "url('/link.jpeg')";
+    },
+    text() {
+      switch (this.state) {
+        case 'empty':
+          return 'Загрузить изображение';
+        case 'loading':
+          return 'Загрузка...';
+        default:
+          return 'Удалить изображение';
+      }
     },
   },
 

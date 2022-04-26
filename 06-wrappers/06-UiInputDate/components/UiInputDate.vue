@@ -9,7 +9,6 @@
 <script>
 import UiInput from './UiInput';
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
 
 const formatMap = {
   time: 'HH:mm',
@@ -40,10 +39,6 @@ export default {
     getFormattedDate() {
       return dayjs.utc(this.modelValue).format(formatMap[this.type]);
     },
-  },
-
-  beforeCreate() {
-    dayjs.extend(utc);
   },
 
   methods: {
