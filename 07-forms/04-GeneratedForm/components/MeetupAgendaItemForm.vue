@@ -1,40 +1,54 @@
 <template>
   <fieldset class="agenda-item-form">
-    <button type="button" class="agenda-item-form__remove-button">
+    <button type="button" class="agenda-item-form__remove-button" @click="handleRemove">
       <ui-icon icon="trash" />
     </button>
 
     <ui-form-group>
-      <ui-dropdown title="Тип" :options="$options.agendaItemTypeOptions" name="type" />
+      <ui-dropdown v-model="localAgendaItem.type" title="Тип" :options="$options.agendaItemTypeOptions" name="type" />
     </ui-form-group>
 
     <div class="agenda-item-form__row">
       <div class="agenda-item-form__col">
         <ui-form-group label="Начало">
-          <ui-input type="time" placeholder="00:00" name="startsAt" />
+          <ui-input
+            v-model="localAgendaItem.startsAt"
+            type="time"
+            placeholder="00:00"
+            name="startsAt"
+            @change="handleChangeStart"
+          />
         </ui-form-group>
       </div>
       <div class="agenda-item-form__col">
         <ui-form-group label="Окончание">
-          <ui-input type="time" placeholder="00:00" name="endsAt" />
+          <ui-input v-model="localAgendaItem.endsAt" type="time" placeholder="00:00" name="endsAt" />
         </ui-form-group>
       </div>
     </div>
 
-    <ui-form-group label="Заголовок">
-      <ui-input name="title" />
-    </ui-form-group>
-    <ui-form-group label="Описание">
-      <ui-input multiline name="description" />
+    <ui-form-group
+      v-for="(formGroup, key) in $options.agendaItemFormSchemas[localAgendaItem.type]"
+      :key="key"
+      :label="formGroup.label"
+    >
+      <component :is="formGroup.component" v-bind="formGroup.props" v-model="localAgendaItem[formGroup.props?.name]" />
     </ui-form-group>
   </fieldset>
 </template>
 
 <script>
+import { cloneDeep } from 'lodash';
+import dayjs from 'dayjs';
+import CustomParseFormat from 'dayjs/plugin/customParseFormat';
 import UiIcon from './UiIcon';
 import UiFormGroup from './UiFormGroup';
 import UiInput from './UiInput';
 import UiDropdown from './UiDropdown';
+
+dayjs.extend(CustomParseFormat);
+
+const timeFormat = 'HH:mm';
 
 const agendaItemTypeIcons = {
   registration: 'key',
@@ -163,6 +177,51 @@ export default {
     agendaItem: {
       type: Object,
       required: true,
+    },
+  },
+
+  emits: ['update:agendaItem', 'remove'],
+
+  data() {
+    return {
+      localAgendaItem: cloneDeep(this.agendaItem),
+      prevStartsAt: this.agendaItem.startsAt,
+    };
+  },
+
+  computed: {
+    isTalkType() {
+      return this.localAgendaItem.type === 'talk';
+    },
+    isOtherType() {
+      return this.localAgendaItem.type === 'other';
+    },
+  },
+
+  watch: {
+    localAgendaItem: {
+      deep: true,
+      immediate: true,
+      handler() {
+        this.$emit('update:agendaItem', cloneDeep(this.localAgendaItem));
+      },
+    },
+  },
+
+  methods: {
+    handleRemove() {
+      this.$emit('remove');
+    },
+    handleChangeStart($event) {
+      const start = dayjs(this.prevStartsAt, timeFormat);
+      const end = dayjs(this.localAgendaItem.endsAt, timeFormat);
+      const duration = end.subtract(start.get('hour'), 'hour').subtract(start.get('minute'), 'minute');
+      const newEndsAt = dayjs($event.target.value, timeFormat)
+        .add(duration.get('hour'), 'hour')
+        .add(duration.get('minute'), 'minute');
+
+      this.localAgendaItem.endsAt = newEndsAt.format(timeFormat);
+      this.prevStartsAt = $event.target.value;
     },
   },
 };

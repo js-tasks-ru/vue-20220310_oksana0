@@ -43,7 +43,7 @@ let lastCreateAgendaItemId = -1;
  * Creates new AgendaItem object with negative temp id
  * @return {AgendaItem}
  */
-export function createAgendaItem() {
+export function createAgendaItem(params) {
   return {
     id: lastCreateAgendaItemId--,
     startsAt: '00:00',
@@ -53,5 +53,6 @@ export function createAgendaItem() {
     description: null,
     speaker: null,
     language: null,
+    ...params,
   };
 }
