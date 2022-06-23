@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import { cloneDeep } from 'lodash';
 import { SensorsDataController } from '../services/SensorsDataController';
 import { SensorsDataStreamingService } from '../services/SensorsDataStreamingService';
 import SensorsDataRow from './SensorsDataRow';
@@ -38,7 +39,7 @@ export default {
 
   methods: {
     callback(data) {
-      this.setData(data);
+      this.setData(cloneDeep(data));
     },
 
     setData(sensors) {
